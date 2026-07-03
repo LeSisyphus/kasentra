@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'router.dart';
-import 'theme.dart';
+import 'theme/kasentra_theme.dart';
 
 class KasentraApp extends StatelessWidget {
   const KasentraApp({super.key});

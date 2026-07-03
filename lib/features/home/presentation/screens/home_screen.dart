@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme.dart';
+import 'package:kasentra/app/theme/kasentra_colors.dart';
+import 'package:kasentra/app/theme/kasentra_spacing.dart';
+import 'package:kasentra/shared/widgets/kasentra_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Padding(padding: EdgeInsets.all(16), child: _HomeContent()),
-    );
+    return const SafeArea(child: _HomeContent());
   }
 }
 
@@ -18,8 +18,8 @@ class _HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      padding: const EdgeInsets.all(KasentraSpacing.screenPadding),
       children: [
         Text(
           'Kasentra',
@@ -27,28 +27,24 @@ class _HomeContent extends StatelessWidget {
             context,
           ).textTheme.titleLarge?.copyWith(color: KasentraColors.primaryDark),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: KasentraSpacing.xxxl),
+
         Text('Halo,', style: Theme.of(context).textTheme.bodyMedium),
         Text('Toko Berkah', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 24),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: KasentraColors.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: KasentraColors.borderLight),
-          ),
+
+        const SizedBox(height: KasentraSpacing.xxl),
+
+        KasentraCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Total Laba', style: Theme.of(context).textTheme.bodyMedium),
-              const SizedBox(height: 12),
+              const SizedBox(height: KasentraSpacing.md),
               Text(
                 'Rp 8.450.000',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: KasentraSpacing.lg),
               Text(
                 'Lihat Laporan Detail >',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
