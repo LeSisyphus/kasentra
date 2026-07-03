@@ -77,3 +77,7 @@ GoogleService-Info.plist
 *.db
 *.sqlite
 *.sqlite3
+
+# Project documentation
+/PRD.md
+/AGENTS.md
