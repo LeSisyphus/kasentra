@@ -7,6 +7,8 @@ import 'package:kasentra/features/transaction/presentation/widgets/transaction_l
 import 'package:kasentra/features/transaction/presentation/widgets/transaction_search_bar.dart';
 import 'package:kasentra/shared/widgets/kasentra_button.dart';
 import 'package:kasentra/shared/widgets/kasentra_choice_chip.dart';
+import 'package:kasentra/features/transaction/presentation/screens/add_expense_screen.dart';
+import 'package:kasentra/features/transaction/presentation/screens/add_sale_screen.dart';
 
 class TransactionScreen extends StatelessWidget {
   const TransactionScreen({super.key});
@@ -128,7 +130,11 @@ class TransactionScreen extends StatelessWidget {
                   child: KasentraButton(
                     label: 'Catat Penjualan',
                     onPressed: () {
-                      // TODO: buka halaman catat penjualan.
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AddSaleScreen(),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -138,7 +144,11 @@ class TransactionScreen extends StatelessWidget {
                     label: 'Catat Pengeluaran',
                     variant: KasentraButtonVariant.danger,
                     onPressed: () {
-                      // TODO: buka halaman catat pengeluaran.
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AddExpenseScreen(),
+                        ),
+                      );
                     },
                   ),
                 ),
