@@ -8,6 +8,8 @@ import 'package:kasentra/features/home/presentation/widgets/home_quick_action_ca
 import 'package:kasentra/features/home/presentation/widgets/home_stat_card.dart';
 import 'package:kasentra/features/home/presentation/widgets/recent_transaction_item.dart';
 import 'package:kasentra/shared/widgets/kasentra_section_header.dart';
+import 'package:kasentra/features/transaction/presentation/screens/add_expense_screen.dart';
+import 'package:kasentra/features/transaction/presentation/screens/add_sale_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -78,7 +80,9 @@ class HomeScreen extends StatelessWidget {
                 iconBackgroundColor: KasentraColors.primaryDark,
                 iconColor: Colors.white,
                 onTap: () {
-                  // TODO: buka form catat penjualan.
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AddSaleScreen()),
+                  );
                 },
               ),
               const SizedBox(width: KasentraSpacing.md),
@@ -88,7 +92,9 @@ class HomeScreen extends StatelessWidget {
                 iconBackgroundColor: KasentraColors.primarySoft,
                 iconColor: KasentraColors.primaryDark,
                 onTap: () {
-                  // TODO: buka form catat pengeluaran.
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
+                  );
                 },
               ),
               const SizedBox(width: KasentraSpacing.md),
