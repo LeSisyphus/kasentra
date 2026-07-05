@@ -1,4 +1,3 @@
-# Miscellaneous
 *.class
 *.log
 *.pyc
@@ -9,8 +8,6 @@
 .history
 .svn/
 migrate_working_dir/
-
-# IntelliJ / Android Studio / VS Code
 *.iml
 *.ipr
 *.iws
@@ -18,8 +15,6 @@ migrate_working_dir/
 .vscode/
 !.vscode/extensions.json
 !.vscode/settings.json
-
-# Flutter / Dart
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -27,23 +22,15 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 build/
-
-# Generated files
 *.g.dart
 *.freezed.dart
 *.mocks.dart
-
-# Coverage
 coverage/
-
-# Android build outputs
 android/.gradle/
 android/app/build/
 android/build/
 android/local.properties
 **/android/**/GeneratedPluginRegistrant.*
-
-# iOS build outputs
 ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
 ios/Flutter/Generated.xcconfig
@@ -54,15 +41,11 @@ ios/build/
 ios/Runner.xcworkspace/xcuserdata/
 ios/Runner.xcodeproj/xcuserdata/
 ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
-
-# macOS generated, kalau nanti platform macOS ditambah
 macos/Flutter/GeneratedPluginRegistrant.swift
 macos/Flutter/ephemeral/
 macos/Pods/
 macos/.symlinks/
 macos/build/
-
-# Secrets / environment
 .env
 .env.*
 *.env
@@ -72,12 +55,6 @@ key.properties
 firebase_options.dart
 google-services.json
 GoogleService-Info.plist
-
-# Local database files
 *.db
 *.sqlite
 *.sqlite3
-
-# Project documentation
-/PRD.md
-/AGENTS.md
