@@ -10,6 +10,7 @@ import 'package:kasentra/features/home/presentation/widgets/recent_transaction_i
 import 'package:kasentra/shared/widgets/kasentra_section_header.dart';
 import 'package:kasentra/features/transaction/presentation/screens/add_expense_screen.dart';
 import 'package:kasentra/features/transaction/presentation/screens/add_sale_screen.dart';
+import 'package:kasentra/features/report/presentation/screens/report_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,9 @@ class HomeScreen extends StatelessWidget {
           HomeProfitCard(
             totalProfit: 8450000,
             onReportTap: () {
-              // TODO: arahkan ke halaman laporan detail.
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const ReportScreen()));
             },
           ),
 
