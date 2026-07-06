@@ -51,13 +51,13 @@ class _SimpleBarChart extends StatelessWidget {
       const _ChartItem(label: 'M1', salesHeight: 58, profitHeight: 26),
       const _ChartItem(label: 'M2', salesHeight: 72, profitHeight: 36),
       const _ChartItem(label: 'M3', salesHeight: 66, profitHeight: 48),
-      const _ChartItem(label: 'M4', salesHeight: 78, profitHeight: 52),
+      const _ChartItem(label: 'M4', salesHeight: 72, profitHeight: 48),
     ];
 
     return Column(
       children: [
         SizedBox(
-          height: 150,
+          height: 172,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -68,17 +68,13 @@ class _SimpleBarChart extends StatelessWidget {
                   Container(
                     width: 28,
                     height: item.salesHeight,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFBD63),
-                      borderRadius: BorderRadius.circular(KasentraRadius.sm),
-                    ),
+                    decoration: BoxDecoration(color: const Color(0xFFFFBD63)),
                   ),
                   Container(
                     width: 28,
                     height: item.profitHeight,
                     decoration: BoxDecoration(
                       color: KasentraColors.primaryDark,
-                      borderRadius: BorderRadius.circular(KasentraRadius.sm),
                     ),
                   ),
                   const SizedBox(height: KasentraSpacing.sm),

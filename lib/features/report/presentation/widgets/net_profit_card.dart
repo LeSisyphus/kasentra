@@ -42,7 +42,7 @@ class NetProfitCard extends StatelessWidget {
           ),
           const SizedBox(height: KasentraSpacing.sm),
           Text(
-            '↗ +12% dari bulan lalu',
+            '+12% dari bulan lalu',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: KasentraColors.primaryDark,
               fontWeight: FontWeight.w600,
