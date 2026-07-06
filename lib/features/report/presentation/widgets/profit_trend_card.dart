@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:kasentra/app/theme/kasentra_colors.dart';
-import 'package:kasentra/app/theme/kasentra_radius.dart';
 import 'package:kasentra/app/theme/kasentra_spacing.dart';
 import 'package:kasentra/shared/widgets/kasentra_card.dart';
 
