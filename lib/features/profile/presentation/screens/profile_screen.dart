@@ -6,6 +6,7 @@ import 'package:kasentra/features/profile/presentation/widgets/profile_business_
 import 'package:kasentra/features/profile/presentation/widgets/profile_section_card.dart';
 import 'package:kasentra/shared/widgets/kasentra_badge.dart';
 import 'package:kasentra/shared/widgets/kasentra_button.dart';
+import 'package:kasentra/features/profile/presentation/screens/edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -116,7 +117,9 @@ class ProfileScreen extends StatelessWidget {
               label: 'Edit Profil Usaha',
               icon: Icons.edit_rounded,
               onPressed: () {
-                // TODO: buka halaman edit profil usaha.
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+                );
               },
             ),
           ),
