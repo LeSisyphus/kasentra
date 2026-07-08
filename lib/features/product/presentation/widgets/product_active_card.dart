@@ -46,7 +46,7 @@ class ProductActiveCard extends StatelessWidget {
           Switch(
             value: value,
             activeTrackColor: KasentraColors.primary,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             onChanged: onChanged,
           ),
         ],
