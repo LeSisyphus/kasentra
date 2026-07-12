@@ -5,8 +5,8 @@ import 'package:kasentra/features/transaction/domain/entities/transaction.dart';
 
 void main() {
   group('ReportCalculator', () {
-    test('calculates report summary for selected business and date range', () {
-      final calculator = ReportCalculator();
+    test('calculates gross and net profit using sales cost and expenses', () {
+      const calculator = ReportCalculator();
 
       final startDate = DateTime(2026, 7, 1);
       final endDate = DateTime(2026, 7, 31);
@@ -37,12 +37,24 @@ void main() {
           updatedAt: DateTime(2026, 7, 6),
         ),
         Transaction(
-          id: 'trx-3',
+          id: 'trx-outside-period',
+          businessId: 'business-1',
+          type: TransactionType.sale,
+          totalAmount: 500000,
+          costAmount: 200000,
+          profitAmount: 300000,
+          paymentStatus: PaymentStatus.paid,
+          transactionDate: DateTime(2026, 8, 1),
+          createdAt: DateTime(2026, 8, 1),
+          updatedAt: DateTime(2026, 8, 1),
+        ),
+        Transaction(
+          id: 'trx-other-business',
           businessId: 'business-2',
           type: TransactionType.sale,
           totalAmount: 999000,
-          costAmount: 0,
-          profitAmount: 0,
+          costAmount: 100000,
+          profitAmount: 899000,
           paymentStatus: PaymentStatus.paid,
           transactionDate: DateTime(2026, 7, 7),
           createdAt: DateTime(2026, 7, 7),
@@ -72,14 +84,15 @@ void main() {
           updatedAt: DateTime(2026, 7, 1),
         ),
         Debt(
-          id: 'debt-3',
+          id: 'debt-paid',
           businessId: 'business-1',
           type: DebtType.receivable,
           status: DebtStatus.paid,
           contactName: 'Pak Budi',
           amount: 120000,
+          paidAt: DateTime(2026, 7, 10),
           createdAt: DateTime(2026, 7, 1),
-          updatedAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 10),
         ),
       ];
 
@@ -92,8 +105,15 @@ void main() {
       );
 
       expect(summary.totalSales, 100000);
+      expect(summary.costOfGoodsSold, 60000);
+      expect(summary.grossProfit, 40000);
       expect(summary.totalExpenses, 25000);
-      expect(summary.netProfit, 75000);
+      expect(summary.netProfit, 15000);
+
+      expect(summary.grossProfit, summary.totalSales - summary.costOfGoodsSold);
+
+      expect(summary.netProfit, summary.grossProfit - summary.totalExpenses);
+
       expect(summary.totalTransactionCount, 2);
       expect(summary.totalPayable, 50000);
       expect(summary.totalReceivable, 75000);

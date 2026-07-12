@@ -4,6 +4,8 @@ class ReportSummary {
     required this.startDate,
     required this.endDate,
     required this.totalSales,
+    required this.costOfGoodsSold,
+    required this.grossProfit,
     required this.totalExpenses,
     required this.netProfit,
     required this.totalTransactionCount,
@@ -15,22 +17,36 @@ class ReportSummary {
   final DateTime startDate;
   final DateTime endDate;
 
-  /// Total pemasukan dari transaksi penjualan.
+  /// Total pendapatan dari transaksi penjualan.
   final int totalSales;
 
-  /// Total pengeluaran usaha.
+  /// Total harga modal barang yang terjual.
+  ///
+  /// Dalam laporan keuangan umum dikenal sebagai HPP
+  /// atau cost of goods sold.
+  final int costOfGoodsSold;
+
+  /// Laba sebelum dikurangi pengeluaran operasional.
+  ///
+  /// Rumus:
+  /// totalSales - costOfGoodsSold.
+  final int grossProfit;
+
+  /// Total pengeluaran operasional usaha.
   final int totalExpenses;
 
-  /// Laba bersih sederhana.
-  /// Rumus MVP: totalSales - totalExpenses.
+  /// Laba setelah modal barang dan pengeluaran operasional.
+  ///
+  /// Rumus:
+  /// grossProfit - totalExpenses.
   final int netProfit;
 
   final int totalTransactionCount;
 
-  /// Utang usaha ke pihak lain.
+  /// Utang usaha yang belum lunas kepada pihak lain.
   final int totalPayable;
 
-  /// Piutang pelanggan ke usaha.
+  /// Piutang pelanggan yang belum dilunasi.
   final int totalReceivable;
 
   bool get isProfitable {
