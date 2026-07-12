@@ -12,22 +12,43 @@ class ReportCalculator {
     required List<Transaction> transactions,
     required List<Debt> debts,
   }) {
-    final filteredTransactions = transactions.where((transaction) {
-      return transaction.businessId == businessId &&
-          _isWithinRange(transaction.transactionDate, startDate, endDate);
-    }).toList();
+    final filteredTransactions = transactions
+        .where((transaction) {
+          return transaction.businessId == businessId &&
+              _isWithinRange(transaction.transactionDate, startDate, endDate);
+        })
+        .toList(growable: false);
+
+    final saleTransactions = filteredTransactions
+        .where((transaction) => transaction.isSale)
+        .toList(growable: false);
+
+    final expenseTransactions = filteredTransactions
+        .where((transaction) => transaction.isExpense)
+        .toList(growable: false);
+
+    final totalSales = saleTransactions.fold<int>(
+      0,
+      (total, transaction) => total + transaction.totalAmount,
+    );
+
+    final costOfGoodsSold = saleTransactions.fold<int>(
+      0,
+      (total, transaction) => total + transaction.costAmount,
+    );
+
+    final grossProfit = totalSales - costOfGoodsSold;
+
+    final totalExpenses = expenseTransactions.fold<int>(
+      0,
+      (total, transaction) => total + transaction.totalAmount,
+    );
+
+    final netProfit = grossProfit - totalExpenses;
 
     final filteredDebts = debts.where((debt) {
       return debt.businessId == businessId;
-    }).toList();
-
-    final totalSales = filteredTransactions
-        .where((transaction) => transaction.isSale)
-        .fold<int>(0, (total, transaction) => total + transaction.totalAmount);
-
-    final totalExpenses = filteredTransactions
-        .where((transaction) => transaction.isExpense)
-        .fold<int>(0, (total, transaction) => total + transaction.totalAmount);
+    });
 
     final totalPayable = filteredDebts
         .where((debt) => debt.isPayable && debt.isUnpaid)
@@ -42,8 +63,10 @@ class ReportCalculator {
       startDate: startDate,
       endDate: endDate,
       totalSales: totalSales,
+      costOfGoodsSold: costOfGoodsSold,
+      grossProfit: grossProfit,
       totalExpenses: totalExpenses,
-      netProfit: totalSales - totalExpenses,
+      netProfit: netProfit,
       totalTransactionCount: filteredTransactions.length,
       totalPayable: totalPayable,
       totalReceivable: totalReceivable,
@@ -51,15 +74,15 @@ class ReportCalculator {
   }
 
   bool _isWithinRange(DateTime date, DateTime startDate, DateTime endDate) {
-    final normalizedDate = DateTime(date.year, date.month, date.day);
-    final normalizedStart = DateTime(
-      startDate.year,
-      startDate.month,
-      startDate.day,
-    );
-    final normalizedEnd = DateTime(endDate.year, endDate.month, endDate.day);
+    final normalizedDate = _dateOnly(date);
+    final normalizedStartDate = _dateOnly(startDate);
+    final normalizedEndDate = _dateOnly(endDate);
 
-    return !normalizedDate.isBefore(normalizedStart) &&
-        !normalizedDate.isAfter(normalizedEnd);
+    return !normalizedDate.isBefore(normalizedStartDate) &&
+        !normalizedDate.isAfter(normalizedEndDate);
+  }
+
+  DateTime _dateOnly(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
   }
 }
