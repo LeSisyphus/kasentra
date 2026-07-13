@@ -148,6 +148,22 @@ class SaveTransactionUseCase {
       );
     }
 
+    final title = transaction.title?.trim();
+
+    if (title == null || title.isEmpty) {
+      throw ArgumentError('Nama pengeluaran wajib diisi.');
+    }
+
+    if (title.length > 100) {
+      throw ArgumentError('Nama pengeluaran maksimal 100 karakter.');
+    }
+
+    final categoryId = transaction.categoryId?.trim();
+
+    if (categoryId == null || categoryId.isEmpty) {
+      throw ArgumentError('Kategori pengeluaran wajib dipilih.');
+    }
+
     if (transaction.costAmount != 0) {
       throw ArgumentError('Cost amount pengeluaran harus bernilai 0.');
     }
