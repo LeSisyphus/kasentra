@@ -16,9 +16,9 @@ void main() {
           id: 'trx-1',
           businessId: 'business-1',
           type: TransactionType.sale,
-          totalAmount: 100000,
-          costAmount: 60000,
-          profitAmount: 40000,
+          totalAmount: 100_000,
+          costAmount: 60_000,
+          profitAmount: 40_000,
           paymentStatus: PaymentStatus.paid,
           transactionDate: DateTime(2026, 7, 5),
           createdAt: DateTime(2026, 7, 5),
@@ -28,7 +28,9 @@ void main() {
           id: 'trx-2',
           businessId: 'business-1',
           type: TransactionType.expense,
-          totalAmount: 25000,
+          title: 'Pembelian stok beras',
+          categoryId: 'category-stock',
+          totalAmount: 25_000,
           costAmount: 0,
           profitAmount: 0,
           paymentStatus: PaymentStatus.paid,
@@ -40,9 +42,9 @@ void main() {
           id: 'trx-outside-period',
           businessId: 'business-1',
           type: TransactionType.sale,
-          totalAmount: 500000,
-          costAmount: 200000,
-          profitAmount: 300000,
+          totalAmount: 500_000,
+          costAmount: 200_000,
+          profitAmount: 300_000,
           paymentStatus: PaymentStatus.paid,
           transactionDate: DateTime(2026, 8, 1),
           createdAt: DateTime(2026, 8, 1),
@@ -52,9 +54,9 @@ void main() {
           id: 'trx-other-business',
           businessId: 'business-2',
           type: TransactionType.sale,
-          totalAmount: 999000,
-          costAmount: 100000,
-          profitAmount: 899000,
+          totalAmount: 999_000,
+          costAmount: 100_000,
+          profitAmount: 899_000,
           paymentStatus: PaymentStatus.paid,
           transactionDate: DateTime(2026, 7, 7),
           createdAt: DateTime(2026, 7, 7),
@@ -69,7 +71,7 @@ void main() {
           type: DebtType.payable,
           status: DebtStatus.unpaid,
           contactName: 'Supplier Beras',
-          amount: 50000,
+          amount: 50_000,
           createdAt: DateTime(2026, 7, 1),
           updatedAt: DateTime(2026, 7, 1),
         ),
@@ -79,7 +81,7 @@ void main() {
           type: DebtType.receivable,
           status: DebtStatus.unpaid,
           contactName: 'Bu Rina',
-          amount: 75000,
+          amount: 75_000,
           createdAt: DateTime(2026, 7, 1),
           updatedAt: DateTime(2026, 7, 1),
         ),
@@ -89,7 +91,7 @@ void main() {
           type: DebtType.receivable,
           status: DebtStatus.paid,
           contactName: 'Pak Budi',
-          amount: 120000,
+          amount: 120_000,
           paidAt: DateTime(2026, 7, 10),
           createdAt: DateTime(2026, 7, 1),
           updatedAt: DateTime(2026, 7, 10),
@@ -104,19 +106,19 @@ void main() {
         debts: debts,
       );
 
-      expect(summary.totalSales, 100000);
-      expect(summary.costOfGoodsSold, 60000);
-      expect(summary.grossProfit, 40000);
-      expect(summary.totalExpenses, 25000);
-      expect(summary.netProfit, 15000);
+      expect(summary.totalSales, 100_000);
+      expect(summary.costOfGoodsSold, 60_000);
+      expect(summary.grossProfit, 40_000);
+      expect(summary.totalExpenses, 25_000);
+      expect(summary.netProfit, 15_000);
 
       expect(summary.grossProfit, summary.totalSales - summary.costOfGoodsSold);
 
       expect(summary.netProfit, summary.grossProfit - summary.totalExpenses);
 
       expect(summary.totalTransactionCount, 2);
-      expect(summary.totalPayable, 50000);
-      expect(summary.totalReceivable, 75000);
+      expect(summary.totalPayable, 50_000);
+      expect(summary.totalReceivable, 75_000);
       expect(summary.isProfitable, true);
       expect(summary.hasDebtOrReceivable, true);
     });

@@ -18,10 +18,12 @@ abstract class TransactionRepository {
     required String transactionId,
   });
 
-  Future<void> saveTransaction({
-    required Transaction transaction,
-    required List<TransactionItem> items,
-  });
+  /// Menyimpan transaksi pengeluaran.
+  ///
+  /// Penjualan tidak boleh disimpan melalui method ini.
+  /// Penjualan harus menggunakan SaleRepository.recordSale()
+  /// agar transaksi, item, stok, dan piutang diproses secara atomik.
+  Future<void> saveExpense(Transaction expense);
 
   Future<void> updatePaymentStatus({
     required String businessId,
