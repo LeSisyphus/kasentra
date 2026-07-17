@@ -3,6 +3,7 @@ import 'package:kasentra/features/transaction/domain/entities/transaction.dart';
 import 'package:kasentra/features/transaction/domain/entities/transaction_item.dart';
 import 'package:kasentra/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:kasentra/features/transaction/domain/usecases/save_expense_usecase.dart';
+import 'package:kasentra/features/transaction/domain/entities/transaction_page.dart';
 
 void main() {
   group('SaveExpenseUseCase', () {
@@ -103,13 +104,15 @@ class _FakeTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Stream<List<Transaction>> watchTransactions({
+  Future<TransactionPage> getTransactionsPage({
     required String businessId,
     DateTime? startDate,
     DateTime? endDate,
     TransactionType? type,
-  }) {
-    return const Stream<List<Transaction>>.empty();
+    required int limit,
+    TransactionCursor? cursor,
+  }) async {
+    return TransactionPage(items: const [], hasMore: false);
   }
 
   @override
