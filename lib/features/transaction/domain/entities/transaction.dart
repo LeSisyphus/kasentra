@@ -19,7 +19,6 @@ class Transaction {
     this.contactName,
     this.contactPhone,
     this.note,
-    this.syncedAt,
   });
 
   final String id;
@@ -67,7 +66,6 @@ class Transaction {
   /// Metadata sementara untuk sinkronisasi.
   ///
   /// Field ini akan dipindahkan ke data model pada refactor berikutnya.
-  final DateTime? syncedAt;
 
   bool get isSale {
     return type == TransactionType.sale;
@@ -110,8 +108,6 @@ class Transaction {
     bool clearNote = false,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? syncedAt,
-    bool clearSyncedAt = false,
   }) {
     return Transaction(
       id: id ?? this.id,
@@ -131,7 +127,6 @@ class Transaction {
       note: clearNote ? null : note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: clearSyncedAt ? null : syncedAt ?? this.syncedAt,
     );
   }
 }

@@ -10,7 +10,6 @@ class Product {
     required this.isActive,
     required this.createdAt,
     required this.updatedAt,
-    this.syncedAt,
   });
 
   final String id;
@@ -34,7 +33,6 @@ class Product {
   final DateTime updatedAt;
 
   /// Nullable untuk future cloud sync.
-  final DateTime? syncedAt;
 
   int get estimatedProfitPerItem {
     return sellingPrice - costPrice;
@@ -64,8 +62,6 @@ class Product {
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? syncedAt,
-    bool clearSyncedAt = false,
   }) {
     return Product(
       id: id ?? this.id,
@@ -78,7 +74,6 @@ class Product {
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: clearSyncedAt ? null : syncedAt ?? this.syncedAt,
     );
   }
 }

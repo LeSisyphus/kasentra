@@ -10,7 +10,6 @@ class Business {
     required this.updatedAt,
     this.phoneNumber,
     this.address,
-    this.syncedAt,
   });
 
   final String id;
@@ -30,7 +29,6 @@ class Business {
   final DateTime updatedAt;
 
   /// Nullable untuk future cloud sync.
-  final DateTime? syncedAt;
 
   String get typeLabel {
     switch (type) {
@@ -58,8 +56,6 @@ class Business {
     bool clearAddress = false,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? syncedAt,
-    bool clearSyncedAt = false,
   }) {
     return Business(
       id: id ?? this.id,
@@ -70,7 +66,6 @@ class Business {
       address: clearAddress ? null : address ?? this.address,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: clearSyncedAt ? null : syncedAt ?? this.syncedAt,
     );
   }
 }

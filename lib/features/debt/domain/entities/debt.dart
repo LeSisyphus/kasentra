@@ -17,7 +17,6 @@ class Debt {
     this.paidAt,
     this.note,
     this.sourceTransactionId,
-    this.syncedAt,
   });
 
   final String id;
@@ -46,7 +45,6 @@ class Debt {
   final DateTime updatedAt;
 
   /// Nullable untuk future cloud sync.
-  final DateTime? syncedAt;
 
   bool get isPayable {
     return type == DebtType.payable;
@@ -91,8 +89,6 @@ class Debt {
     bool clearSourceTransactionId = false,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? syncedAt,
-    bool clearSyncedAt = false,
   }) {
     return Debt(
       id: id ?? this.id,
@@ -112,7 +108,6 @@ class Debt {
           : sourceTransactionId ?? this.sourceTransactionId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      syncedAt: clearSyncedAt ? null : syncedAt ?? this.syncedAt,
     );
   }
 }
