@@ -1,0 +1,169 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:kasentra/app/providers/profile_providers.dart';
+import 'package:kasentra/app/theme/kasentra_theme.dart';
+import 'package:kasentra/features/profile/domain/entities/business.dart';
+import 'package:kasentra/features/profile/domain/repositories/profile_repository.dart';
+import 'package:kasentra/features/profile/domain/usecases/watch_active_business_usecase.dart';
+import 'package:kasentra/features/profile/presentation/screens/profile_screen.dart';
+
+void main() {
+  group('ProfileScreen', () {
+    testWidgets('shows loading state', (tester) async {
+      final controller = StreamController<Business?>();
+
+      addTearDown(controller.close);
+
+      await _pumpProfileScreen(tester, stream: controller.stream);
+
+      expect(find.byKey(const Key('profile-loading')), findsOneWidget);
+    });
+
+    testWidgets('shows empty state when business does not exist', (
+      tester,
+    ) async {
+      await _pumpProfileScreen(tester, stream: Stream.value(null));
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('profile-empty')), findsOneWidget);
+
+      expect(find.text('Profil usaha belum disiapkan'), findsOneWidget);
+
+      expect(find.text('Siapkan Profil Usaha'), findsOneWidget);
+    });
+
+    testWidgets('shows active business data', (tester) async {
+      final business = Business(
+        id: 'business-1',
+        name: 'Toko Kasentra',
+        ownerName: 'Ibu Lina',
+        type: BusinessType.groceryStore,
+        phoneNumber: '081234567890',
+        address: 'Jalan Mawar',
+        createdAt: DateTime.utc(2025, 1, 1),
+        updatedAt: DateTime.utc(2025, 1, 1),
+      );
+
+      await _pumpProfileScreen(tester, stream: Stream.value(business));
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('profile-content')), findsOneWidget);
+
+      expect(find.text('Toko Kasentra'), findsOneWidget);
+      expect(find.text('Ibu Lina'), findsOneWidget);
+      expect(find.text('081234567890'), findsOneWidget);
+      expect(find.text('Jalan Mawar'), findsOneWidget);
+      expect(find.text('Toko Sembako'), findsNWidgets(2));
+
+      expect(find.text('Toko Sembako Ibu'), findsNothing);
+    });
+
+    testWidgets('shows fallback text for optional fields', (tester) async {
+      final business = Business(
+        id: 'business-1',
+        name: 'Toko Kasentra',
+        ownerName: 'Ibu Lina',
+        type: BusinessType.retail,
+        createdAt: DateTime.utc(2025, 1, 1),
+        updatedAt: DateTime.utc(2025, 1, 1),
+      );
+
+      await _pumpProfileScreen(tester, stream: Stream.value(business));
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Belum diisi'), findsNWidgets(2));
+    });
+
+    testWidgets('shows error state', (tester) async {
+      await _pumpProfileScreen(
+        tester,
+        stream: Stream<Business?>.error(StateError('database failure')),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('profile-error')), findsOneWidget);
+
+      expect(find.text('Profil usaha gagal dimuat.'), findsOneWidget);
+
+      expect(find.text('database failure'), findsNothing);
+    });
+
+    testWidgets('calls edit callback', (tester) async {
+      var editCalled = false;
+
+      final business = Business(
+        id: 'business-1',
+        name: 'Toko Kasentra',
+        ownerName: 'Ibu Lina',
+        type: BusinessType.groceryStore,
+        createdAt: DateTime.utc(2025, 1, 1),
+        updatedAt: DateTime.utc(2025, 1, 1),
+      );
+
+      await _pumpProfileScreen(
+        tester,
+        stream: Stream.value(business),
+        onEditBusiness: () {
+          editCalled = true;
+        },
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Edit Profil Usaha'));
+
+      await tester.pump();
+
+      expect(editCalled, isTrue);
+    });
+  });
+}
+
+Future<void> _pumpProfileScreen(
+  WidgetTester tester, {
+  required Stream<Business?> stream,
+  VoidCallback? onEditBusiness,
+}) async {
+  final repository = _FakeProfileRepository(activeBusinessStream: stream);
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        watchActiveBusinessUseCaseProvider.overrideWithValue(
+          WatchActiveBusinessUseCase(repository),
+        ),
+      ],
+      child: MaterialApp(
+        theme: KasentraTheme.lightTheme,
+        home: Scaffold(body: ProfileScreen(onEditBusiness: onEditBusiness)),
+      ),
+    ),
+  );
+
+  await tester.pump();
+}
+
+final class _FakeProfileRepository implements ProfileRepository {
+  _FakeProfileRepository({required this.activeBusinessStream});
+
+  final Stream<Business?> activeBusinessStream;
+
+  @override
+  Stream<Business?> watchActiveBusiness() {
+    return activeBusinessStream;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      '${invocation.memberName} tidak digunakan dalam test ini.',
+    );
+  }
+}
