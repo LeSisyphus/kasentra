@@ -29,19 +29,23 @@ void main() {
     });
 
     Business createBusiness({
+      String id = 'business-1',
       String name = 'Toko Kasentra',
       BusinessType type = BusinessType.groceryStore,
+      DateTime? businessCreatedAt,
       DateTime? updatedAt,
     }) {
+      final resolvedCreatedAt = businessCreatedAt ?? createdAt;
+
       return Business(
-        id: 'business-1',
+        id: id,
         name: name,
-        ownerName: 'Ibu Lina',
+        ownerName: 'Yanti Ariani',
         type: type,
-        phoneNumber: '081234567890',
-        address: 'Jalan Mawar',
-        createdAt: createdAt,
-        updatedAt: updatedAt ?? createdAt,
+        phoneNumber: '081649353732',
+        address: 'Jl. Pekapuran Raya, Gg. Timor-Timur',
+        createdAt: resolvedCreatedAt,
+        updatedAt: updatedAt ?? resolvedCreatedAt,
       );
     }
 
@@ -61,9 +65,9 @@ void main() {
       expect(result, isNotNull);
       expect(result!.id, 'business-1');
       expect(result.name, 'Toko Kasentra');
-      expect(result.ownerName, 'Ibu Lina');
+      expect(result.ownerName, 'Yanti Ariani');
       expect(result.type, BusinessType.groceryStore);
-      expect(result.phoneNumber, '081234567890');
+      expect(result.phoneNumber, '081649353732');
     });
 
     test('watch emits a saved business', () async {
@@ -112,6 +116,31 @@ void main() {
 
       expect(storedRow.businessType, 'retail');
       expect(storedRow.syncedAt, isNull);
+    });
+    test('watches the oldest business as the active business', () async {
+      await repository.saveBusiness(
+        createBusiness(
+          id: 'business-later',
+          name: 'Usaha Kedua',
+          businessCreatedAt: DateTime.utc(2025, 1, 2),
+        ),
+      );
+
+      await repository.saveBusiness(
+        createBusiness(
+          id: 'business-first',
+          name: 'Usaha Pertama',
+          businessCreatedAt: DateTime.utc(2025, 1, 1),
+        ),
+      );
+
+      final result = await repository.watchActiveBusiness().firstWhere(
+        (business) => business != null,
+      );
+
+      expect(result, isNotNull);
+      expect(result!.id, 'business-first');
+      expect(result.name, 'Usaha Pertama');
     });
   });
 }

@@ -1,6 +1,10 @@
+import 'package:drift/drift.dart' show OrderingTerm;
+
 import '../../../../core/database/app_database.dart';
 
 abstract interface class LocalProfileDataSource {
+  Stream<BusinessRow?> watchActiveBusiness();
+
   Stream<BusinessRow?> watchBusiness({required String businessId});
 
   Future<BusinessRow?> getBusinessById({required String businessId});
@@ -12,6 +16,18 @@ final class DriftLocalProfileDataSource implements LocalProfileDataSource {
   const DriftLocalProfileDataSource(this._database);
 
   final AppDatabase _database;
+
+  @override
+  Stream<BusinessRow?> watchActiveBusiness() {
+    final query = _database.select(_database.businesses)
+      ..orderBy([
+        (row) => OrderingTerm.asc(row.createdAt),
+        (row) => OrderingTerm.asc(row.id),
+      ])
+      ..limit(1);
+
+    return query.watchSingleOrNull();
+  }
 
   @override
   Stream<BusinessRow?> watchBusiness({required String businessId}) {

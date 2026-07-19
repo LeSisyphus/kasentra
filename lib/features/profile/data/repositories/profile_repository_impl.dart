@@ -9,10 +9,25 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   final LocalProfileDataSource _localDataSource;
 
   @override
+  Stream<Business?> watchActiveBusiness() {
+    return _localDataSource.watchActiveBusiness().map((row) {
+      if (row == null) {
+        return null;
+      }
+
+      return BusinessMapper.toDomain(row);
+    });
+  }
+
+  @override
   Stream<Business?> watchBusiness({required String businessId}) {
-    return _localDataSource
-        .watchBusiness(businessId: businessId)
-        .map((row) => row == null ? null : BusinessMapper.toDomain(row));
+    return _localDataSource.watchBusiness(businessId: businessId).map((row) {
+      if (row == null) {
+        return null;
+      }
+
+      return BusinessMapper.toDomain(row);
+    });
   }
 
   @override
