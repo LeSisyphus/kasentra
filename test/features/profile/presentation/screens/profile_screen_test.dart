@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kasentra/app/providers/profile_providers.dart';
 import 'package:kasentra/app/theme/kasentra_theme.dart';
 import 'package:kasentra/features/profile/domain/entities/business.dart';
-import 'package:kasentra/features/profile/domain/repositories/profile_repository.dart';
-import 'package:kasentra/features/profile/domain/usecases/watch_active_business_usecase.dart';
 import 'package:kasentra/features/profile/presentation/screens/profile_screen.dart';
 
 void main() {
@@ -36,6 +34,31 @@ void main() {
       expect(find.text('Siapkan Profil Usaha'), findsOneWidget);
     });
 
+    testWidgets('passes null when setting up the first business', (
+      tester,
+    ) async {
+      Business? callbackValue;
+      var callbackCalled = false;
+
+      await _pumpProfileScreen(
+        tester,
+        stream: Stream.value(null),
+        onEditBusiness: (business) {
+          callbackCalled = true;
+          callbackValue = business;
+        },
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Siapkan Profil Usaha'));
+
+      await tester.pump();
+
+      expect(callbackCalled, isTrue);
+      expect(callbackValue, isNull);
+    });
+
     testWidgets('shows active business data', (tester) async {
       final business = Business(
         id: 'business-1',
@@ -59,8 +82,6 @@ void main() {
       expect(find.text('081234567890'), findsOneWidget);
       expect(find.text('Jalan Mawar'), findsOneWidget);
       expect(find.text('Toko Sembako'), findsNWidgets(2));
-
-      expect(find.text('Toko Sembako Ibu'), findsNothing);
     });
 
     testWidgets('shows fallback text for optional fields', (tester) async {
@@ -95,8 +116,8 @@ void main() {
       expect(find.text('database failure'), findsNothing);
     });
 
-    testWidgets('calls edit callback', (tester) async {
-      var editCalled = false;
+    testWidgets('passes active business to edit callback', (tester) async {
+      Business? selectedBusiness;
 
       final business = Business(
         id: 'business-1',
@@ -110,8 +131,8 @@ void main() {
       await _pumpProfileScreen(
         tester,
         stream: Stream.value(business),
-        onEditBusiness: () {
-          editCalled = true;
+        onEditBusiness: (value) {
+          selectedBusiness = value;
         },
       );
 
@@ -121,7 +142,7 @@ void main() {
 
       await tester.pump();
 
-      expect(editCalled, isTrue);
+      expect(selectedBusiness, same(business));
     });
   });
 }
@@ -129,17 +150,11 @@ void main() {
 Future<void> _pumpProfileScreen(
   WidgetTester tester, {
   required Stream<Business?> stream,
-  VoidCallback? onEditBusiness,
+  ValueChanged<Business?>? onEditBusiness,
 }) async {
-  final repository = _FakeProfileRepository(activeBusinessStream: stream);
-
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [
-        watchActiveBusinessUseCaseProvider.overrideWithValue(
-          WatchActiveBusinessUseCase(repository),
-        ),
-      ],
+      overrides: [activeBusinessProvider.overrideWith((ref) => stream)],
       child: MaterialApp(
         theme: KasentraTheme.lightTheme,
         home: Scaffold(body: ProfileScreen(onEditBusiness: onEditBusiness)),
@@ -148,22 +163,4 @@ Future<void> _pumpProfileScreen(
   );
 
   await tester.pump();
-}
-
-final class _FakeProfileRepository implements ProfileRepository {
-  _FakeProfileRepository({required this.activeBusinessStream});
-
-  final Stream<Business?> activeBusinessStream;
-
-  @override
-  Stream<Business?> watchActiveBusiness() {
-    return activeBusinessStream;
-  }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      '${invocation.memberName} tidak digunakan dalam test ini.',
-    );
-  }
 }

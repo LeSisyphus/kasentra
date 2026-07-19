@@ -13,7 +13,7 @@ import 'package:kasentra/shared/widgets/kasentra_button.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key, this.onEditBusiness});
 
-  final VoidCallback? onEditBusiness;
+  final ValueChanged<Business?>? onEditBusiness;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +53,7 @@ class _ProfileDataPage extends StatelessWidget {
   });
 
   final Business? business;
-  final VoidCallback? onEditBusiness;
+  final ValueChanged<Business?>? onEditBusiness;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,11 @@ class _ProfileDataPage extends StatelessWidget {
           label: business == null
               ? 'Siapkan Profil Usaha'
               : 'Edit Profil Usaha',
-          onPressed: onEditBusiness,
+          onPressed: onEditBusiness == null
+              ? null
+              : () {
+                  onEditBusiness!(business);
+                },
         ),
       ],
     );
