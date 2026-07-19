@@ -1,18 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/transaction/data/datasources/local_transaction_data_source.dart';
+import '../../features/transaction/data/repositories/transaction_repository_impl.dart';
 import '../../features/transaction/domain/repositories/transaction_repository.dart';
 import '../../features/transaction/domain/usecases/get_transactions_page_usecase.dart';
+import 'database_providers.dart';
 
-final transactionRepositoryProvider = Provider<TransactionRepository>(
+final localTransactionDataSourceProvider = Provider<LocalTransactionDataSource>(
   (ref) {
-    throw UnimplementedError(
-      'TransactionRepository belum didaftarkan. '
-      'Override transactionRepositoryProvider dengan implementasi data layer.',
-    );
+    final database = ref.watch(appDatabaseProvider);
+
+    return DriftLocalTransactionDataSource(database);
   },
-  name: 'transactionRepositoryProvider',
-  retry: (retryCount, error) => null,
+  name: 'localTransactionDataSourceProvider',
 );
+
+final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
+  final localDataSource = ref.watch(localTransactionDataSourceProvider);
+
+  return TransactionRepositoryImpl(localDataSource);
+}, name: 'transactionRepositoryProvider');
 
 final getTransactionsPageUseCaseProvider = Provider<GetTransactionsPageUseCase>(
   (ref) {
