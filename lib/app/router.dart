@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../features/debt/presentation/screens/debt_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/product/presentation/screens/product_screen.dart';
+import '../features/profile/domain/entities/business.dart';
+import '../features/profile/presentation/screens/profile_form_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/transaction/presentation/screens/transaction_screen.dart';
 
@@ -10,19 +14,40 @@ class KasentraRoot extends StatefulWidget {
   const KasentraRoot({super.key});
 
   @override
-  State<KasentraRoot> createState() => _KasentraRootState();
+  State<KasentraRoot> createState() {
+    return _KasentraRootState();
+  }
 }
 
 class _KasentraRootState extends State<KasentraRoot> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    TransactionScreen(),
-    ProductScreen(),
-    DebtScreen(),
-    ProfileScreen(),
-  ];
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _screens = [
+      const HomeScreen(),
+      const TransactionScreen(),
+      const ProductScreen(),
+      const DebtScreen(),
+      ProfileScreen(onEditBusiness: _openProfileForm),
+    ];
+  }
+
+  void _openProfileForm(Business? business) {
+    unawaited(
+      Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) {
+            return ProfileFormScreen(initialBusiness: business);
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
