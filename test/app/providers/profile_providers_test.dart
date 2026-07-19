@@ -7,8 +7,10 @@ import 'package:kasentra/app/providers/profile_providers.dart';
 import 'package:kasentra/core/database/app_database.dart';
 import 'package:kasentra/features/profile/data/datasources/local_profile_data_source.dart';
 import 'package:kasentra/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:kasentra/features/profile/domain/entities/business.dart';
 import 'package:kasentra/features/profile/domain/usecases/get_business_by_id_usecase.dart';
 import 'package:kasentra/features/profile/domain/usecases/save_business_usecase.dart';
+import 'package:kasentra/features/profile/domain/usecases/watch_active_business_usecase.dart';
 import 'package:kasentra/features/profile/domain/usecases/watch_business_usecase.dart';
 
 void main() {
@@ -21,11 +23,19 @@ void main() {
         ),
       );
 
-      final container = ProviderContainer.test(
+      final container = ProviderContainer(
         overrides: [appDatabaseProvider.overrideWithValue(database)],
       );
 
+      final activeBusinessSubscription = container
+          .listen<AsyncValue<Business?>>(
+            activeBusinessProvider,
+            (_, _) {},
+            fireImmediately: true,
+          );
+
       addTearDown(() async {
+        activeBusinessSubscription.close();
         container.dispose();
         await database.close();
       });
@@ -41,6 +51,11 @@ void main() {
       );
 
       expect(
+        container.read(watchActiveBusinessUseCaseProvider),
+        isA<WatchActiveBusinessUseCase>(),
+      );
+
+      expect(
         container.read(watchBusinessUseCaseProvider),
         isA<WatchBusinessUseCase>(),
       );
@@ -53,6 +68,11 @@ void main() {
       expect(
         container.read(saveBusinessUseCaseProvider),
         isA<SaveBusinessUseCase>(),
+      );
+
+      await expectLater(
+        container.read(activeBusinessProvider.future),
+        completion(isNull),
       );
     });
   });
