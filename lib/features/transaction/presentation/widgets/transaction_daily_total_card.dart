@@ -10,16 +10,19 @@ class TransactionDailyTotalCard extends StatelessWidget {
     super.key,
     required this.total,
     required this.transactionCount,
+    this.label = 'Total Harian',
   });
 
   final int total;
   final int transactionCount;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final isPositive = total >= 0;
 
     return Container(
+      key: const Key('transaction-total-card'),
       width: double.infinity,
       padding: const EdgeInsets.all(KasentraSpacing.xl),
       decoration: BoxDecoration(
@@ -31,7 +34,7 @@ class TransactionDailyTotalCard extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'Total Harian',
+              label,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: KasentraColors.textSecondary,
                 fontWeight: FontWeight.w700,
@@ -42,7 +45,8 @@ class TransactionDailyTotalCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${isPositive ? '+' : '-'}${RupiahFormatter.format(total.abs())}',
+                '${isPositive ? '+' : '-'}'
+                '${RupiahFormatter.format(total.abs())}',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: isPositive
                       ? KasentraColors.success
