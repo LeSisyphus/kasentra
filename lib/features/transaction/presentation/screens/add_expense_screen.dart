@@ -23,10 +23,7 @@ import 'package:kasentra/shared/widgets/kasentra_button.dart';
 class AddExpenseScreen extends ConsumerStatefulWidget {
   const AddExpenseScreen({super.key, this.now, this.idGenerator});
 
-  /// Dependency waktu agar widget test deterministik.
   final DateTime Function()? now;
-
-  /// Dependency pembuat ID agar widget test deterministik.
   final String Function(DateTime timestamp)? idGenerator;
 
   @override
@@ -226,6 +223,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         children: [
           Expanded(
             child: ListView(
+              key: const Key('expense-form-scroll-view'),
               padding: const EdgeInsets.fromLTRB(
                 KasentraSpacing.screenPadding,
                 KasentraSpacing.lg,
@@ -363,25 +361,6 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     ],
                   ),
                 ),
-                if (_saveErrorMessage != null) ...[
-                  const SizedBox(height: KasentraSpacing.lg),
-                  Container(
-                    key: const Key('expense-form-error'),
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(KasentraSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: KasentraColors.dangerSoft,
-                      borderRadius: BorderRadius.circular(KasentraRadius.md),
-                    ),
-                    child: Text(
-                      _saveErrorMessage!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: KasentraColors.danger,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
                 const SizedBox(height: KasentraSpacing.xxxl),
                 const ExpenseInfoBox(),
               ],
@@ -404,20 +383,45 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 ),
               ],
             ),
-            child: KasentraButton(
-              key: const Key('expense-save-button'),
-              label: _isSaving ? 'Menyimpan...' : 'Simpan Pengeluaran',
-              icon: Icons.save_rounded,
-              onPressed: _isSaving
-                  ? null
-                  : () {
-                      unawaited(
-                        _submit(
-                          business: business,
-                          categoryId: selectedCategoryId,
-                        ),
-                      );
-                    },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_saveErrorMessage != null) ...[
+                  Container(
+                    key: const Key('expense-form-error'),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(KasentraSpacing.md),
+                    decoration: BoxDecoration(
+                      color: KasentraColors.dangerSoft,
+                      borderRadius: BorderRadius.circular(KasentraRadius.md),
+                    ),
+                    child: Text(
+                      _saveErrorMessage!,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: KasentraColors.danger,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: KasentraSpacing.sm),
+                ],
+                KasentraButton(
+                  key: const Key('expense-save-button'),
+                  label: _isSaving ? 'Menyimpan...' : 'Simpan Pengeluaran',
+                  icon: Icons.save_rounded,
+                  onPressed: _isSaving
+                      ? null
+                      : () {
+                          unawaited(
+                            _submit(
+                              business: business,
+                              categoryId: selectedCategoryId,
+                            ),
+                          );
+                        },
+                ),
+              ],
             ),
           ),
         ],
@@ -462,6 +466,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       if (!mounted) {
         return;
       }
+
+      ref.invalidate(expenseCategoriesProvider(businessId));
 
       setState(() {
         _bootstrappingBusinessId = null;

@@ -44,14 +44,14 @@ void main() {
         '125000',
       );
 
-      await tester.enterText(
-        find.byKey(const Key('expense-note-field')),
-        '  Tagihan Februari  ',
-      );
-
       await tester.tap(find.text('Operasional'));
-
       await tester.pump();
+
+      final noteField = find.byKey(const Key('expense-note-field'));
+
+      await _scrollExpenseFormUntilVisible(tester, noteField);
+
+      await tester.enterText(noteField, '  Tagihan Februari  ');
 
       await tester.tap(find.byKey(const Key('expense-save-button')));
 
@@ -200,7 +200,12 @@ void main() {
 
       await tester.tap(find.byKey(const Key('expense-save-button')));
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+
+      await _pumpUntilFound(
+        tester,
+        find.byKey(const Key('expense-form-error')),
+      );
 
       expect(transactionRepository.saveCalls, 1);
 
@@ -231,6 +236,12 @@ void main() {
         businessStream: Stream.value(null),
         now: now,
         idGenerator: (_) => 'expense-generated',
+        waitForForm: false,
+      );
+
+      await _pumpUntilFound(
+        tester,
+        find.byKey(const Key('expense-missing-business')),
       );
 
       expect(find.byKey(const Key('expense-missing-business')), findsOneWidget);
@@ -258,6 +269,12 @@ void main() {
         businessStream: Stream.value(_createBusiness()),
         now: now,
         idGenerator: (_) => 'expense-generated',
+        waitForForm: false,
+      );
+
+      await _pumpUntilFound(
+        tester,
+        find.byKey(const Key('expense-category-bootstrap-error')),
       );
 
       expect(
@@ -274,6 +291,56 @@ void main() {
   });
 }
 
+Future<void> _pumpUntilFound(
+  WidgetTester tester,
+  Finder finder, {
+  int maximumPumps = 50,
+}) async {
+  for (var pumpIndex = 0; pumpIndex < maximumPumps; pumpIndex++) {
+    if (finder.evaluate().isNotEmpty) {
+      return;
+    }
+
+    await tester.pump(const Duration(milliseconds: 20));
+  }
+
+  expect(
+    finder,
+    findsOneWidget,
+    reason:
+        'Widget tidak muncul setelah '
+        '$maximumPumps pump.',
+  );
+}
+
+Future<void> _scrollExpenseFormUntilVisible(
+  WidgetTester tester,
+  Finder finder,
+) async {
+  final listView = find.byKey(const Key('expense-form-scroll-view'));
+
+  expect(
+    listView,
+    findsOneWidget,
+    reason: 'ListView form pengeluaran tidak ditemukan.',
+  );
+
+  for (var attempt = 0; attempt < 10 && finder.evaluate().isEmpty; attempt++) {
+    await tester.drag(listView, const Offset(0, -250));
+
+    await tester.pump();
+  }
+
+  expect(
+    finder,
+    findsOneWidget,
+    reason: 'Field tujuan tidak ditemukan setelah form digulir.',
+  );
+
+  await tester.ensureVisible(finder);
+  await tester.pump();
+}
+
 Future<void> _openExpenseScreen(
   WidgetTester tester, {
   required _FakeCategoryRepository categoryRepository,
@@ -281,6 +348,7 @@ Future<void> _openExpenseScreen(
   required Stream<Business?> businessStream,
   required DateTime now,
   required String Function(DateTime timestamp) idGenerator,
+  bool waitForForm = true,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -321,7 +389,12 @@ Future<void> _openExpenseScreen(
 
   await tester.tap(find.byKey(const Key('open-expense-screen')));
 
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 350));
+
+  if (waitForForm) {
+    await _pumpUntilFound(tester, find.byKey(const Key('expense-form')));
+  }
 }
 
 Business _createBusiness() {
