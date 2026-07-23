@@ -4,6 +4,7 @@ import '../../features/transaction/data/datasources/local_transaction_data_sourc
 import '../../features/transaction/data/repositories/transaction_repository_impl.dart';
 import '../../features/transaction/domain/repositories/transaction_repository.dart';
 import '../../features/transaction/domain/usecases/get_transactions_page_usecase.dart';
+import '../../features/transaction/domain/usecases/save_expense_usecase.dart';
 import 'database_providers.dart';
 
 final localTransactionDataSourceProvider = Provider<LocalTransactionDataSource>(
@@ -29,3 +30,9 @@ final getTransactionsPageUseCaseProvider = Provider<GetTransactionsPageUseCase>(
   },
   name: 'getTransactionsPageUseCaseProvider',
 );
+
+final saveExpenseUseCaseProvider = Provider<SaveExpenseUseCase>((ref) {
+  final repository = ref.watch(transactionRepositoryProvider);
+
+  return SaveExpenseUseCase(repository);
+}, name: 'saveExpenseUseCaseProvider');

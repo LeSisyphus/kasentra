@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/product/data/datasources/local_category_data_source.dart';
 import '../../features/product/data/repositories/category_repository_impl.dart';
+import '../../features/product/domain/entities/category.dart';
 import '../../features/product/domain/repositories/category_repository.dart';
 import '../../features/product/domain/usecases/ensure_default_expense_categories_usecase.dart';
 import '../../features/product/domain/usecases/get_category_by_id_usecase.dart';
@@ -47,3 +48,12 @@ final ensureDefaultExpenseCategoriesUseCaseProvider =
 
       return EnsureDefaultExpenseCategoriesUseCase(repository);
     }, name: 'ensureDefaultExpenseCategoriesUseCaseProvider');
+
+final expenseCategoriesProvider = StreamProvider.family<List<Category>, String>(
+  (ref, businessId) {
+    final watchCategories = ref.watch(watchCategoriesUseCaseProvider);
+
+    return watchCategories(businessId: businessId, type: CategoryType.expense);
+  },
+  name: 'expenseCategoriesProvider',
+);

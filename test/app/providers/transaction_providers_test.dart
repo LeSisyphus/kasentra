@@ -9,10 +9,11 @@ import 'package:kasentra/features/transaction/data/datasources/local_transaction
 import 'package:kasentra/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:kasentra/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:kasentra/features/transaction/domain/usecases/get_transactions_page_usecase.dart';
+import 'package:kasentra/features/transaction/domain/usecases/save_expense_usecase.dart';
 
 void main() {
   group('transaction providers', () {
-    test('creates local data source, repository, and use case', () async {
+    test('creates local data source, repository, and use cases', () async {
       final database = AppDatabase(
         DatabaseConnection(
           NativeDatabase.memory(),
@@ -43,6 +44,11 @@ void main() {
         container.read(getTransactionsPageUseCaseProvider),
         isA<GetTransactionsPageUseCase>(),
       );
+
+      expect(
+        container.read(saveExpenseUseCaseProvider),
+        isA<SaveExpenseUseCase>(),
+      );
     });
 
     test('allows the transaction repository to be overridden', () {
@@ -62,15 +68,21 @@ void main() {
         container.read(getTransactionsPageUseCaseProvider),
         isA<GetTransactionsPageUseCase>(),
       );
+
+      expect(
+        container.read(saveExpenseUseCaseProvider),
+        isA<SaveExpenseUseCase>(),
+      );
     });
   });
 }
 
-class _FakeTransactionRepository implements TransactionRepository {
+final class _FakeTransactionRepository implements TransactionRepository {
   @override
   dynamic noSuchMethod(Invocation invocation) {
     throw UnimplementedError(
-      '${invocation.memberName} tidak digunakan pada provider test.',
+      '${invocation.memberName} tidak digunakan '
+      'pada provider test.',
     );
   }
 }
